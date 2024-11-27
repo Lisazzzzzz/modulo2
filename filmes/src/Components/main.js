@@ -1,9 +1,17 @@
-import react from "react";
-import './style.css'
+import React, { useState } from "react";
+import './style.css';
 import botaolupa from "../images/headerimage/lupa.png"; 
+import Card from "./card";
 
-const Main =()=>{
-    return(
+const Main = () => {
+    const [showInput, setShowInput] = useState(false); 
+
+    const handleButtonClick = (event) => {
+        event.preventDefault(); 
+        setShowInput(!showInput); 
+    };
+
+    return (
         <> 
             <div className="header">
                 <nav>
@@ -27,16 +35,39 @@ const Main =()=>{
                 </nav>
                 <form>
                     <div className="search-btn"> 
-                        <input type="text" placeholder="Coloca o nome do filme" className="inputText">
-                        
-                        </input>
-                        <button> <img src={botaolupa} alt="Botão com imagem" className="button-image" /> </button>
+                        {showInput && ( 
+                            <input 
+                                type="text" 
+                                placeholder="Coloca o nome do filme" 
+                                className="inputText"
+    
+                            />
+                        )}
+                        <button 
+                            className="image-button" 
+                            onClick={handleButtonClick}
+                        >
+                            <img 
+                                src={botaolupa} 
+                                alt="Botão com imagem" 
+                                className="button-image" 
+                            />
+                        </button>
                     </div>
                 </form>
             </div>
-        
+            <div className="container">
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                    <Card/>
+                </div>
         </>
-    )
+    );
 }
 
 export default Main;
