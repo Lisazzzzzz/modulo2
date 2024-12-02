@@ -16,49 +16,53 @@ const PrivateRoute = ({ isAuthenticated, children }) => {
 function App() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const [loading, setLoading] = useState(true); 
-console.log("1");
-useEffect(() => {
-  const unsubscribe = auth.onAuthStateChanged(
-    (user) => {
-      if (user) {
-        dispatch(setUser({ email: user.email })); // Atualiza o estado global
-      } else {
-        dispatch(clearUser()); // Limpa o estado global se não autenticado
+  const [loading, setLoading] = useState(true); // Estado de carregamento
+
+  useEffect(() => {
+    // Listener para mudanças no estado de autenticação do Firebase
+    const unsubscribe = auth.onAuthStateChanged(
+      (user) => {
+        if (user) {
+          dispatch(setUser({ email: user.email })); // Atualiza o estado global
+        } else {
+          dispatch(clearUser()); // Limpa o estado global se não autenticado
+        }
+        setLoading(false); // Finaliza o estado de carregamento
+      },
+      (error) => {
+        console.error("Erro ao verificar autenticação:", error);
+        setLoading(false); // Evita loading infinito mesmo em caso de erro
       }
-      setLoading(false); // Finaliza o estado de carregamento
-    },
-    (error) => {
-      console.error("Erro ao verificar autenticação:", error);
-      setLoading(false); // Evita loading infinito mesmo em caso de erro
-    }
-  );
+    );
 
-  return () => unsubscribe();
-}, [dispatch]);
+    return () => unsubscribe(); // Remove o listener ao desmontar o componente
+  }, [dispatch]);
 
-  console.log("3");
-  console.log(loading);
-
-  // if (loading) {
-  //   return <p>Loading...</p>; 
-  // }
+  // Exibe uma tela de carregamento enquanto verifica a autenticação
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#000", color: "#fff" }}>
+        <p>Carregando...</p>
+      </div>
+    );
+  }
 
   return (
     <Router>
       <Routes>
-        
+        {/* Redirecionamento com base no estado de autenticação */}
         <Route
           path="/"
           element={
             isAuthenticated ? <Navigate to="/main" /> : <Navigate to="/login" />
           }
         />
-        
+
+        {/* Rotas públicas */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
 
-       
+        {/* Rotas privadas */}
         <Route
           path="/main"
           element={

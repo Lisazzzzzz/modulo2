@@ -55,7 +55,7 @@ const Main = () => {
             </button>
           </SearchButton>
         </Form>
-        <LogoutButton /> {/* Botão de Logout */}
+        <LogoutButton /> 
       </Header>
       <Container>
         {isLoading && <p className="notfound">Loading...</p>}
@@ -101,7 +101,7 @@ const Header = styled.div`
 const Nav = styled.nav`
   ul {
     display: flex;
-    margin-left: -7rem; 
+    margin-left: -2rem; 
 
     @media (max-width: 900px) {
       flex-direction: column;
@@ -148,6 +148,7 @@ const Form = styled.form`
   margin-top: 1rem;
   display: flex;
   justify-content: right;
+  margin-left: 20rem
 `;
 
 const SearchButton = styled.div`
