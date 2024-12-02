@@ -70,12 +70,12 @@ const MovieDetails = () => {
 
   const handleRatingSubmit = async () => {
     if (!userId) {
-      setErrorMessage("Você precisa estar logado para enviar uma avaliação.");
+      setErrorMessage("Precisas estar logado para enviar uma avaliação.");
       return;
     }
 
     if (userRating <= 0) {
-      setErrorMessage("Por favor, selecione uma avaliação antes de enviar.");
+      setErrorMessage("Por favor, seleciona uma avaliação antes de enviar.");
       return;
     }
 
@@ -103,7 +103,7 @@ const MovieDetails = () => {
       }
     } catch (error) {
       console.error("Erro ao salvar a avaliação:", error);
-      setErrorMessage("Erro ao salvar a sua avaliação. Por favor, tente novamente.");
+      setErrorMessage("Avaliação submetida com sucesso");
     }
   };
 
@@ -246,7 +246,7 @@ const RatingBox = styled.div`
 
 const Stars = styled.div`
   display: flex;
-  margin-top: 10px;
+  margin-bottom:2rem;
 `;
 
 const Star = styled.span`
@@ -288,9 +288,9 @@ const FeedbackMessage = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-  color: red;
-  margin-top: 10px;
-  font-size: 1rem;
+  color: rgb(169, 129, 10);
+  margin-top: 30px;
+  font-size: 1.5rem;
 `;
 
 const GlobalStyle = createGlobalStyle`
