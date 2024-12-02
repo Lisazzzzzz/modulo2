@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import { doc, setDoc, getDocs, updateDoc, collection } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDocs, updateDoc, collection, getDoc } from "firebase/firestore";
 import { db, auth } from "./firebase/firebase.conf";
 
 const MovieDetails = () => {
@@ -12,6 +12,7 @@ const MovieDetails = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const userId = auth.currentUser ? auth.currentUser.uid : null;
 
@@ -67,6 +68,49 @@ const MovieDetails = () => {
 
     fetchRatings();
   }, [id, userId, averageRating]);
+
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const checkFavorite = async () => {
+      try {
+        const favoriteRef = doc(db, `users/${userId}/favorites/${id}`);
+        const favoriteDoc = await getDoc(favoriteRef);
+
+        if (favoriteDoc.exists()) {
+          setIsFavorite(true);
+        }
+      } catch (error) {
+        console.error("Erro ao verificar favoritos:", error);
+      }
+    };
+
+    checkFavorite();
+  }, [id, userId]);
+
+  const handleFavoriteToggle = async () => {
+    if (!userId) {
+      setErrorMessage("Precisas estar logado para adicionar aos favoritos.");
+      return;
+    }
+
+    try {
+      const favoriteRef = doc(db, `users/${userId}/favorites/${id}`);
+
+      if (isFavorite) {
+        await deleteDoc(favoriteRef);
+        setIsFavorite(false);
+        console.log("Filme removido dos favoritos.");
+      } else {
+        await setDoc(favoriteRef, { movieId: id });
+        setIsFavorite(true);
+        console.log("Filme adicionado aos favoritos.");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar favoritos:", error);
+    }
+  };
 
   const handleRatingSubmit = async () => {
     if (!userId) {
@@ -148,6 +192,9 @@ const MovieDetails = () => {
               </RatingBox>
             </RatingContainer>
           </Details>
+              <FavoriteButton onClick={handleFavoriteToggle}>
+                {isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+              </FavoriteButton>
         </Content>
       </Container>
     </>
@@ -246,6 +293,7 @@ const RatingBox = styled.div`
 
 const Stars = styled.div`
   display: flex;
+
   margin-bottom:2rem;
 `;
 
@@ -301,5 +349,28 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     overflow-x: hidden; 
     background-color: black; 
+  }
+`;
+
+const FavoriteButton = styled.button`
+  background-color: ${(props) => (props.isFavorite ? "rgb(169, 129, 10)" : "transparent")};
+  color: ${(props) => (props.isFavorite ? "white" : "rgb(169, 129, 10)")};
+  border: 2px solid rgb(169, 129, 10);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 150px;
+  height:50px;
+  margin-top: 2rem;
+  &:hover {
+    background-color: ${(props) => (props.isFavorite ? "rgb(149, 109, 10)" : "rgb(169, 129, 10)")};
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.98);
   }
 `;
