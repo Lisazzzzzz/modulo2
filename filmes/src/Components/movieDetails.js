@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled, { createGlobalStyle } from "styled-components";
-import { doc, setDoc, deleteDoc, getDocs, updateDoc, collection, getDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc, getDocs, collection, getDoc } from "firebase/firestore";
 import { db, auth } from "./firebase/firebase.conf";
 
 const MovieDetails = () => {
@@ -9,7 +9,9 @@ const MovieDetails = () => {
   const navigate = useNavigate();
   const [movie, setMovie] = useState(null);
   const [userRating, setUserRating] = useState(0);
-  const [averageRating, setAverageRating] = useState(0);
+  const [apiRating, setApiRating] = useState(0); // Média inicial da API
+  const [userAverageRating, setUserAverageRating] = useState(0); // Média dos utilizadores
+  const [combinedAverageRating, setCombinedAverageRating] = useState(0); // Média combinada
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
@@ -24,7 +26,8 @@ const MovieDetails = () => {
         );
         const data = await response.json();
         setMovie(data);
-        setAverageRating(data.vote_average); 
+        setApiRating(data.vote_average); // Define a média inicial da API
+        setCombinedAverageRating(data.vote_average); // Inicializa a média combinada com o valor da API
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);
       }
@@ -41,34 +44,28 @@ const MovieDetails = () => {
         const ratingsRef = collection(db, `ratings/${id}/userRatings`);
         const snapshot = await getDocs(ratingsRef);
 
-        let firestoreAverage = 0; 
-        let combinedAverage = averageRating; 
-
         if (!snapshot.empty) {
           const userRatings = snapshot.docs.map((doc) => doc.data());
-
           const totalRatings = userRatings.reduce((acc, curr) => acc + curr.rating, 0);
           const numRatings = userRatings.length;
-          firestoreAverage = totalRatings / numRatings;
 
+          const firestoreAverage = totalRatings / numRatings;
+
+          setUserAverageRating(firestoreAverage); // Atualiza a média dos utilizadores
+          setCombinedAverageRating((apiRating + firestoreAverage) / 2); // Atualiza a média combinada
           
-          combinedAverage = (averageRating + firestoreAverage) / 2;
-
           const userRatingDoc = snapshot.docs.find((doc) => doc.id === userId);
           if (userRatingDoc) {
             setUserRating(userRatingDoc.data().rating);
           }
         }
-
-        setAverageRating(combinedAverage); 
       } catch (error) {
         console.error("Erro ao carregar avaliações:", error);
       }
     };
 
     fetchRatings();
-  }, [id, userId, averageRating]);
-
+  }, [id, userId, apiRating]);
 
   useEffect(() => {
     if (!userId) return;
@@ -126,6 +123,7 @@ const MovieDetails = () => {
     try {
       const userRatingRef = doc(db, `ratings/${id}/userRatings/${userId}`);
       await setDoc(userRatingRef, { rating: userRating });
+      setIsSubmitted(true);
 
       const ratingsRef = collection(db, `ratings/${id}/userRatings`);
       const snapshot = await getDocs(ratingsRef);
@@ -133,21 +131,16 @@ const MovieDetails = () => {
         const userRatings = snapshot.docs.map((doc) => doc.data());
         const totalRatings = userRatings.reduce((acc, curr) => acc + curr.rating, 0);
         const numRatings = userRatings.length;
-        const firestoreAverage = totalRatings / numRatings;
+        const newFirestoreAverage = totalRatings / numRatings;
 
-        const newAverage = (movie.vote_average + firestoreAverage) / 2;
-
-        const movieRef = doc(db, `ratings/${id}`);
-        await updateDoc(movieRef, { averageRating: newAverage });
-
-        setAverageRating(newAverage);
+        setUserAverageRating(newFirestoreAverage); // Atualiza a média dos utilizadores
+        setCombinedAverageRating((apiRating + newFirestoreAverage) / 2); // Atualiza a média combinada
         setErrorMessage("");
         setIsSubmitted(true);
         setTimeout(() => setIsSubmitted(false), 3000);
       }
     } catch (error) {
       console.error("Erro ao salvar a avaliação:", error);
-      setErrorMessage("Avaliação submetida com sucesso");
     }
   };
 
@@ -163,7 +156,7 @@ const MovieDetails = () => {
         <Content>
           <PosterContainer>
             <Poster src={image_path + movie.poster_path} alt="Poster" />
-            <Rating>{averageRating.toFixed(1)}</Rating>
+            <Rating>{combinedAverageRating.toFixed(1)}</Rating> {/* Exibe a média combinada */}
           </PosterContainer>
           <Details>
             <Title>{movie.title}</Title>
@@ -187,14 +180,14 @@ const MovieDetails = () => {
                 <SubmitButton onClick={handleRatingSubmit} disabled={isSubmitted}>
                   {isSubmitted ? "Submetido" : "Enviar"}
                 </SubmitButton>
-                {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
                 {isSubmitted && <FeedbackMessage>Avaliação enviada com sucesso!</FeedbackMessage>}
+                {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
               </RatingBox>
             </RatingContainer>
           </Details>
-              <FavoriteButton onClick={handleFavoriteToggle}>
-                {isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
-              </FavoriteButton>
+          <FavoriteButton onClick={handleFavoriteToggle}>
+            {isFavorite ? "Remover dos Favoritos" : "Adicionar aos Favoritos"}
+          </FavoriteButton>
         </Content>
       </Container>
     </>
@@ -330,7 +323,7 @@ const SubmitButton = styled.button`
 `;
 
 const FeedbackMessage = styled.div`
-  color: lime;
+  color: rgb(169, 129, 10);
   margin-top: 10px;
   font-size: 1rem;
 `;
