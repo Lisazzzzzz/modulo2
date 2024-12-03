@@ -36,8 +36,8 @@ const Main = () => {
             {categories.map((category) => (
               <li key={category}>
                 <a
-                  href="#"
-                  onClick={() => setMovieType(category)} // Define o tipo de exibição ao clicar
+                  href={`#${category}`}
+                  onClick={() => setMovieType(category)} 
                 >
                   {category}
                 </a>
