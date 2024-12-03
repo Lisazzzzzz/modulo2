@@ -86,7 +86,6 @@ const FavoritesList = () => {
 
 export default FavoritesList;
 
-// Styled Components
 
 const FavoritesContainer = styled.div`
   margin: 2rem auto;
