@@ -10,7 +10,6 @@ import MovieDetails from "./Components/movieDetails";
 import FavoritesList from "./Components/favoritos";
 
 
-// Componente para rotas protegidas
 const PrivateRoute = ({ isAuthenticated, children }) => {
   return isAuthenticated ? children : <Navigate to="/login" />;
 };
@@ -18,18 +17,18 @@ const PrivateRoute = ({ isAuthenticated, children }) => {
 function App() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  const [loading, setLoading] = useState(true); // Estado de carregamento
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     // Listener para mudanças no estado de autenticação do Firebase
     const unsubscribe = auth.onAuthStateChanged(
       (user) => {
         if (user) {
-          dispatch(setUser({ email: user.email })); // Atualiza o estado global
+          dispatch(setUser({ email: user.email })); 
         } else {
-          dispatch(clearUser()); // Limpa o estado global se não autenticado
+          dispatch(clearUser()); 
         }
-        setLoading(false); // Finaliza o estado de carregamento
+        setLoading(false); 
       },
       (error) => {
         console.error("Erro ao verificar autenticação:", error);
@@ -40,7 +39,7 @@ function App() {
     return () => unsubscribe(); // Remove o listener ao desmontar o componente
   }, [dispatch]);
 
-  // Exibe uma tela de carregamento enquanto verifica a autenticação
+ 
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", backgroundColor: "#000", color: "#fff" }}>
@@ -52,7 +51,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Redirecionamento com base no estado de autenticação */}
+      
         <Route
           path="/"
           element={
@@ -60,11 +59,11 @@ function App() {
           }
         />
 
-        {/* Rotas públicas */}
+       
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterForm />} />
 
-        {/* Rotas privadas */}
+     
         <Route
           path="/main"
           element={
