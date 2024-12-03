@@ -6,7 +6,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-// Serviço do Firebase Auth
+
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fakeBaseQuery(),
