@@ -232,7 +232,7 @@ const FocusInput = styled.span`
     width: 0;
     height: 2px;
     transition: all 0.4s;
-    background: linear-gradient(to left, rgb(234, 0, 117), rgb(169, 129, 10));
+    background: linear-gradient(to left, rgb(234, 205, 117), rgb(169, 129, 10));
   }
 
   &::after {
