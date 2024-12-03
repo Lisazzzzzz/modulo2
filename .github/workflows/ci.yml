@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+run-name: ${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - main
+      - '**'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test_and_deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22]
+    steps:
+      
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        run: |
+          cd filmes
+          npm install
+
+
+      - name: Run ESLint
+        run: |
+          cd filmes
+          npx eslint . --ext .js,.jsx,.ts,.tsx
+
+      - name: Run Prettier Check
+        run: |
+          cd filmes
+          npm run format 
+
+      - name: Build
+        run: |
+          cd filmes
+          npm run build
+
+      - name: List build directory contents
+        run: ls -la ./filmes/build
+
+      - name: Deploy to Netlify
+        id: netlify_deploy
+        run: |
+          netlify deploy --prod --dir filmes/build --site ${{ secrets.NETLIFY_SITE_ID }} --auth ${{ secrets.NETLIFY_AUTH_TOKEN }}
