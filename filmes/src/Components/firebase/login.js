@@ -61,7 +61,7 @@ function Login() {
 
               <TextCenter>
                 <Txt1> Ainda não tens conta? </Txt1>
-                <Txt2 href="/register"> Criar conta </Txt2>
+                <Txt2 href="/registo"> Criar conta </Txt2>
               </TextCenter>
             </LoginForm>
           </WrapLogin>

@@ -61,7 +61,7 @@ function App() {
 
        
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<RegisterForm />} />
+        <Route path="/registo" element={<RegisterForm />} />
 
      
         <Route
