@@ -7,6 +7,8 @@ import Login from "./Components/firebase/login";
 import RegisterForm from "./Components/firebase/registo";
 import Main from "./Components/main";
 import MovieDetails from "./Components/movieDetails";
+import FavoritesList from "./Components/favoritos";
+
 
 // Componente para rotas protegidas
 const PrivateRoute = ({ isAuthenticated, children }) => {
@@ -76,6 +78,15 @@ function App() {
           element={
             <PrivateRoute isAuthenticated={isAuthenticated}>
               <MovieDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/favoritos"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <FavoritesList />
             </PrivateRoute>
           }
         />
