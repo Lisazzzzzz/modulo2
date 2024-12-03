@@ -26,8 +26,8 @@ const MovieDetails = () => {
         );
         const data = await response.json();
         setMovie(data);
-        setApiRating(data.vote_average); // Define a média inicial da API
-        setCombinedAverageRating(data.vote_average); // Inicializa a média combinada com o valor da API
+        setApiRating(data.vote_average); 
+        setCombinedAverageRating(data.vote_average); 
       } catch (error) {
         console.error("Erro ao buscar detalhes do filme:", error);
       }
@@ -51,8 +51,8 @@ const MovieDetails = () => {
 
           const firestoreAverage = totalRatings / numRatings;
 
-          setUserAverageRating(firestoreAverage); // Atualiza a média dos utilizadores
-          setCombinedAverageRating((apiRating + firestoreAverage) / 2); // Atualiza a média combinada
+          setUserAverageRating(firestoreAverage); 
+          setCombinedAverageRating((apiRating + firestoreAverage) / 2); 
           
           const userRatingDoc = snapshot.docs.find((doc) => doc.id === userId);
           if (userRatingDoc) {
@@ -133,8 +133,8 @@ const MovieDetails = () => {
         const numRatings = userRatings.length;
         const newFirestoreAverage = totalRatings / numRatings;
 
-        setUserAverageRating(newFirestoreAverage); // Atualiza a média dos utilizadores
-        setCombinedAverageRating((apiRating + newFirestoreAverage) / 2); // Atualiza a média combinada
+        setUserAverageRating(newFirestoreAverage); 
+        setCombinedAverageRating((apiRating + newFirestoreAverage) / 2); 
         setErrorMessage("");
         setIsSubmitted(true);
         setTimeout(() => setIsSubmitted(false), 3000);
