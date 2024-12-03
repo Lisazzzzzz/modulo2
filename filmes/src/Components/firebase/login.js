@@ -201,7 +201,7 @@ const LoginFormBtn = styled.button`
   align-items: center;
   width: 100%;
   height: 50px;
-  background: linear-gradient(to left, rgb(234, 0, 117), rgb(169, 129, 10));
+  background: linear-gradient(to left, rgb(234, 205, 117), rgb(169, 129, 10));
   &:hover {
     cursor: pointer;
   }
