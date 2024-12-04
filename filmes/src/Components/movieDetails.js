@@ -4,6 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { doc, setDoc, deleteDoc, getDocs, collection, getDoc } from "firebase/firestore";
 import { db, auth } from "./firebase/firebase.conf";
 
+
 const MovieDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,6 +19,8 @@ const MovieDetails = () => {
 
   const userId = auth.currentUser ? auth.currentUser.uid : null;
 
+
+  
   useEffect(() => {
     const fetchMovieDetails = async () => {
       try {
@@ -36,6 +39,7 @@ const MovieDetails = () => {
     fetchMovieDetails();
   }, [id]);
 
+
   useEffect(() => {
     if (!userId) return;
 
@@ -50,7 +54,6 @@ const MovieDetails = () => {
           const numRatings = userRatings.length;
 
           const firestoreAverage = totalRatings / numRatings;
-
           setUserAverageRating(firestoreAverage); 
           setCombinedAverageRating((apiRating + firestoreAverage) / 2); 
           
@@ -161,6 +164,7 @@ const MovieDetails = () => {
           <Details>
             <Title>{movie.title}</Title>
             <Overview>{movie.overview}</Overview>
+            <None> <p>Avaliação média: {(userAverageRating || 0).toFixed(1)}</p> </None>
             <RatingContainer>
               <RatingBox>
                 <p>
@@ -366,4 +370,11 @@ const FavoriteButton = styled.button`
   &:active {
     transform: scale(0.98);
   }
+`;
+
+const None = styled.div`
+  color: rgb(169, 129, 10);
+  margin-top: 30px;
+  font-size: 1.5rem;
+  display: none; /* Torna o elemento invisível e remove do layout */
 `;
