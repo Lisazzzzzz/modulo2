@@ -8,6 +8,7 @@ import RegisterForm from "./Components/firebase/registo";
 import Main from "./Components/main";
 import MovieDetails from "./Components/movieDetails";
 import FavoritesList from "./Components/favoritos";
+import StaticPage from "./Components/paginaestatica";
 
 
 const PrivateRoute = ({ isAuthenticated, children }) => {
@@ -89,6 +90,16 @@ function App() {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="/about"
+          element={
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <StaticPage />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );

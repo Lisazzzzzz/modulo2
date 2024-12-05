@@ -5,9 +5,10 @@ import Card from "./card";
 import FavoritesList from "./favoritos";
 import LogoutButton from "./logout";
 import botaolupa from "../images/headerimage/lupa.png";
+import StaticPage from "./paginaestatica";
 
 const Main = () => {
-  const categories = ["Popular", "Theatre", "Drama", "Comedie", "Favorites"]; // Adiciona "Favorites" às categorias
+  const categories = ["Popular", "Theatre", "Drama", "Comedie", "Favorites", "About"]; 
   const [showInput, setShowInput] = useState(false);
   const [movieType, setMovieType] = useState("Popular"); // Estado para controlar o tipo de exibição
   const [search, setSearch] = useState("");
@@ -66,8 +67,10 @@ const Main = () => {
 
       {/* Renderiza a página conforme o tipo selecionado */}
       <Container>
-        {movieType === "Favorites" ? (
-          <FavoritesList /> // Renderiza os favoritos
+      {movieType === "Favorites" ? (
+          <FavoritesList /> 
+        ) : movieType === "About" ? (
+          <StaticPage /> 
         ) : (
           <>
             {isLoading && <p className="notfound">Loading...</p>}

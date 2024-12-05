@@ -5,16 +5,20 @@ import { Link } from "react-router-dom";
 const Card = ({ info }) => {
   const image_path = "https://image.tmdb.org/t/p/w500";
   const roundedRating = info.vote_average ? info.vote_average.toFixed(1) : "N/A";
+
   return (
     <Movie>
-      <Poster src={image_path + info.poster_path} alt="Imagem" />
+      <Poster 
+        src={image_path + info.poster_path} 
+        alt="Imagem" 
+      />
       <MovieDetails>
         <Box>
           <Title>{info.title}</Title>
           <Rating>{roundedRating}</Rating>
         </Box>
       </MovieDetails>
-      <Link to={`/movie/${info.id}`}> 
+      <Link to={`/movie/${info.id}`}>
         <Overview>
           <h1>Overview</h1>
           {info.overview}
@@ -26,7 +30,7 @@ const Card = ({ info }) => {
 
 export default Card;
 
-// Styled components
+
 
 const Overview = styled.div`
   position: absolute;
@@ -45,13 +49,15 @@ const Overview = styled.div`
 
 const Movie = styled.div`
   box-shadow: 0 5px 10px black;
-  width: 250px;
   background-color: #f0a500;
-  margin: 1rem;
+  margin: 0 auto;
   border-radius: 5px;
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  width: 250px; /* Define a largura dos cards */
+  height: auto; 
+  margin: 10px;
 
   &:hover ${Overview} {
     transform: translateY(0%);
@@ -59,8 +65,9 @@ const Movie = styled.div`
 `;
 
 const Poster = styled.img`
-  width: 100%;
-  height: 250px;
+  display: block;
+  width: 100%; 
+  height: auto; 
 `;
 
 const MovieDetails = styled.div`
@@ -81,7 +88,6 @@ const Title = styled.h4`
   width: 160px;
 `;
 
-
 const Rating = styled.p`
   background-color: rgb(169, 129, 10);
   width: 45px;
@@ -96,3 +102,5 @@ const Rating = styled.p`
   right: 20px;
   bottom: 5px;
 `;
+
+
